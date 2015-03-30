@@ -1,0 +1,78 @@
+import java.io.*;
+import java.util.*;
+import java.net.*;
+
+
+public class ChatServer 
+{
+
+	private static int PORT=4444;
+	public static void main(String[] args) throws IOException
+	{
+		ServerSocket server = null;
+		
+		
+		try 
+		{
+			server=new ServerSocket (PORT);
+		}
+		catch(IOException e)
+		{
+			System.out.println("Can't connect");
+		}
+		System.out.println("Server is running !");
+		while (true)
+		{
+			Socket socket= server.accept();
+			//Handler users=new Handler(socket) [3];
+			Handler user= new Handler(socket);
+			user.start();
+		}
+		
+	}
+
+	private static class Handler extends Thread 
+	{
+		Socket socket;
+		Scanner socIn;
+		private String message;
+		private BufferedReader in;
+		private PrintWriter out;
+		
+		public Handler (Socket socket)
+		{
+			this.socket=socket;
+		}
+		public void run ()
+		{
+			try {in= new BufferedReader(new InputStreamReader (socket.getInputStream()));}
+			catch (IOException e) {System.out.println("Err.");}
+			
+			int a=0;
+			while (a!=2)
+			{
+				try 
+				{
+					socIn=new Scanner(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+				} catch (IOException e) 
+				{
+					//e.printStackTrace();
+				}
+			message=socIn.nextLine();
+			System.out.println("The message: "+message);
+			message=socIn.nextLine();
+			System.out.println(message);
+			
+			}
+			try {
+				socket.close();
+			} catch (IOException e) {
+				
+				
+			}
+			System.out.println("The message: "+message);
+			
+		}
+		
+	}
+}
